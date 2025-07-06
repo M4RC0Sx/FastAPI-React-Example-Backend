@@ -38,3 +38,7 @@ class RefreshToken(SQLModel, table=True):
     user: Mapped[User] = Relationship(
         sa_relationship=relationship("User", back_populates="refresh_tokens")
     )
+
+
+class RefreshTokenRequest(SQLModel):
+    refresh_token: str
