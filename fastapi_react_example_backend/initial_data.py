@@ -17,7 +17,7 @@ async def init_db() -> None:
             session=session, email=settings.ADMIN_EMAIL
         )
         if user:
-            logger.ingo("Admin user already exists, skipping creation.")
+            logger.info("Admin user already exists, skipping creation.")
             return
 
         user_create = UserCreate(
