@@ -5,12 +5,26 @@ from typing import TYPE_CHECKING
 from sqlmodel import select
 
 from fastapi_react_example_backend.core.security import get_password_hash
+from fastapi_react_example_backend.core.security import verify_password
 from fastapi_react_example_backend.models.user import User
 from fastapi_react_example_backend.models.user import UserCreate
 
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
+
+
+async def authenticate(
+    *, session: AsyncSession, email: str, password: str
+) -> User | None:
+    db_user = await get_user_by_email(session=session, email=email)
+    if not db_user:
+        return None
+
+    if not verify_password(password, db_user.hashed_password):
+        return None
+
+    return db_user
 
 
 async def create_user(
