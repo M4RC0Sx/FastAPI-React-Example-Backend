@@ -23,6 +23,8 @@ class Settings(BaseSettings):
 
     BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
+    ROUTER_API_V1_PREFIX: str = "/api/v1"
+
     SECRET_KEY: str = token_urlsafe(32)
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 5
     ACCESS_TOKEN_ALGORITHM: str = "HS256"
