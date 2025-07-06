@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import UTC
+from datetime import datetime
 from typing import Annotated
 
 from fastapi import APIRouter
@@ -12,6 +14,9 @@ import fastapi_react_example_backend.crud.user as user_crud
 
 from fastapi_react_example_backend.api.deps import SessionDep  # noqa: TC001
 from fastapi_react_example_backend.core.security import create_access_token
+from fastapi_react_example_backend.crud.token import create_refresh_token
+from fastapi_react_example_backend.crud.token import get_refresh_token
+from fastapi_react_example_backend.models.token import RefreshTokenRequest
 from fastapi_react_example_backend.models.token import Token
 
 
@@ -34,11 +39,39 @@ async def login_for_access_token(
         )
 
     access_token = create_access_token(user.id, expires_delta=None)
-    # TODO: Create refresh token
-    refresh_token = "dummy_refresh_token"  # Placeholder for refresh token logic
+    refresh_token = await create_refresh_token(session=session, user_id=user.id)
 
     return Token(
         access_token=access_token,
-        refresh_token=refresh_token,
+        refresh_token=refresh_token.token,
+        token_type="bearer",
+    )
+
+
+@router.post("/login/refresh-token", response_model=Token)
+async def refresh_access_token(
+    request: RefreshTokenRequest, session: SessionDep
+) -> Token:
+    refresh_token_db = await get_refresh_token(
+        session=session, token=request.refresh_token
+    )
+    if not refresh_token_db or refresh_token_db.expires_at < datetime.now(UTC):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired refresh token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    await session.delete(refresh_token_db)
+    await session.commit()
+
+    new_access_token = create_access_token(refresh_token_db.user_id, expires_delta=None)
+    new_refresh_token_db = await create_refresh_token(
+        session=session, user_id=refresh_token_db.user_id
+    )
+
+    return Token(
+        access_token=new_access_token,
+        refresh_token=new_refresh_token_db.token,
         token_type="bearer",
     )
