@@ -8,6 +8,7 @@ import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from fastapi_react_example_backend.api.v1.api import router as api_v1_router
 from fastapi_react_example_backend.core.config import settings
 from fastapi_react_example_backend.core.logging_config import setup_logging
 from fastapi_react_example_backend.initial_data import init_db
@@ -44,6 +45,8 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
         expose_headers=["X-Request-ID"],
     )
+
+app.include_router(api_v1_router, prefix=settings.ROUTER_API_V1_PREFIX, tags=["v1"])
 
 
 @app.get("/")
