@@ -9,6 +9,7 @@ This is a FastAPI backend for a React application, providing user authentication
 - Middleware for structured logging with Structlog.
 - API versioning and well-structured endpoints.
 - Tests for API endpoints using pytest, pytest-asyncio, and httpx. Using DB session dependency injection and fuxtures for testing with aiosqlite on memory database.
+- Tests coverage reporting with pytest-cov.
 
 ## Installation
 1. Clone the repository.
@@ -24,6 +25,13 @@ Run the tests using:
 ```bash
 poetry run pytest
 ```
+
+Run the tests with coverage using:
+```bash
+poetry run pytest --cov=fastapi_react_example_backend
+```
+
+![Coverage](coverage.png)
 
 ## Frontend Repository
 For the frontend React application, visit the [FastAPI React Example Frontend](https://github.com/M4RC0Sx/FastAPI-React-Example-Frontend).
