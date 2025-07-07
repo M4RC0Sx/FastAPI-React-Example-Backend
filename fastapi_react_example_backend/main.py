@@ -15,8 +15,6 @@ from fastapi_react_example_backend.initial_data import init_db
 from fastapi_react_example_backend.middleware.structlog import StructlogMiddleware
 
 
-# TODO: Discord: dany_x8x
-
 if TYPE_CHECKING:
     from collections.abc import AsyncGenerator
 
