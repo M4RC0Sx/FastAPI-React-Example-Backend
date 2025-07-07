@@ -34,7 +34,7 @@ async def login_for_access_token(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Infvalid credentials",
+            detail="Invalid credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
